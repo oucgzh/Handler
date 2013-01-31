@@ -25,7 +25,7 @@ public:
 
 public:
 
-	
+	//guan
 	HANDLE m_hComm;
 	virtual BOOL OnInitDialog();
 	CString strTemp;
