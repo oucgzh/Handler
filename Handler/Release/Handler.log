@@ -1,0 +1,36 @@
+﻿Build started 2013/1/31 星期四 16:18:34.
+     1>Project "E:\Handler\Handler\Handler.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Release\Handler.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         All outputs are up-to-date.
+         D:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D _WINDOWS /D NDEBUG /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Release\Handler.pch" /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt HandlerDlg.cpp
+         HandlerDlg.cpp
+     1>HandlerDlg.cpp(353): warning C4309: 'initializing' : truncation of constant value
+     1>HandlerDlg.cpp(353): warning C4309: 'initializing' : truncation of constant value
+     1>HandlerDlg.cpp(445): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 D:\Program Files\Microsoft Visual Studio 10.0\VC\include\stdio.h(371) : see declaration of 'sprintf'
+     1>HandlerDlg.cpp(502): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 D:\Program Files\Microsoft Visual Studio 10.0\VC\include\stdio.h(371) : see declaration of 'sprintf'
+       ResourceCompile:
+         All outputs are up-to-date.
+       Link:
+         D:\Program Files\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\Handler\Release\Handler.exe" /INCREMENTAL:NO /NOLOGO dxguid.lib dinput8.lib comctl32.lib "glib-2.0.lib" "gtk-win32-2.0.lib" "gdk-win32-2.0.lib" "gobject-2.0.lib" "gdk_pixbuf-2.0.lib" "gthread-2.0.lib" "gmodule-2.0.lib" "pango-1.0.lib" intl.lib /MANIFEST /ManifestFile:"Release\Handler.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"E:\Handler\Release\Handler.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\Handler\Release\Handler.lib" /MACHINE:X86 Release\Handler.res
+         Release\ConfigDlg.obj
+         Release\Handler.obj
+         Release\HandlerDlg.obj
+         Release\SerialPort.obj
+         Release\stdafx.obj
+         Generating code
+         Finished generating code
+         Handler.vcxproj -> E:\Handler\Release\Handler.exe
+       Manifest:
+         C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"E:\Handler\Release\Handler.exe;#1" /manifest Release\Handler.exe.intermediate.manifest "D:\Program Files\Microsoft Visual Studio 10.0\VC\Include\Manifest\dpiaware.manifest"
+       FinalizeBuildStatus:
+         Deleting file "Release\Handler.unsuccessfulbuild".
+         Touching "Release\Handler.lastbuildstate".
+     1>Done Building Project "E:\Handler\Handler\Handler.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:45.32
