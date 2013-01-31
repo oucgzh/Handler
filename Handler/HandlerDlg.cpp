@@ -1,4 +1,4 @@
-
+Ôªø
 // HandlerDlg.cpp : implementation file
 //
 
@@ -131,8 +131,8 @@ BOOL CHandlerDlg::OnInitDialog()
 	b_Right = FALSE;
 	b_Backword = FALSE;
 	b_Forward = FALSE;
-	SetDlgItemText(IDC_SERIAL_SATTE,_T("…–Œ¥¥Úø™..."));
-	SetDlgItemText(IDC_WORKSTATE,_T("…–Œ¥ø™ª˙..."));
+	SetDlgItemText(IDC_SERIAL_SATTE,_T("Â∞öÊú™ÊâìÂºÄ..."));
+	SetDlgItemText(IDC_WORKSTATE,_T("Â∞öÊú™ÂºÄÊú∫..."));
 	GetDlgItem(IDC_BUTTON_CLOSESERIAL)->EnableWindow(FALSE);
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
@@ -183,8 +183,8 @@ void CHandlerDlg::OnPaint()
 		CRect rect;
 		CPaintDC dc(this);
 		GetClientRect(rect);
-		dc.FillSolidRect(rect,RGB(65,105,225));  //…Ë÷√±≥æ∞…´
-		//dc.FillSolidRect(rect,RGB(10,0,0));  //…Ë÷√±≥æ∞…´
+		dc.FillSolidRect(rect,RGB(65,105,225));  //ËÆæÁΩÆËÉåÊôØËâ≤
+		//dc.FillSolidRect(rect,RGB(10,0,0));  //ËÆæÁΩÆËÉåÊôØËâ≤
 		/************************************************************************/
 		/*                      Jeffrey                                         */
 		/************************************************************************/
@@ -209,21 +209,21 @@ void CHandlerDlg::OnStartMotor()
 	if(result == JOYERR_NOCANDO )
 	{
 		MessageBeep(MB_ICONEXCLAMATION);
-		MessageBox(_T("≤ªƒ‹≤∂ªÒ”Œœ∑∏À"), NULL, MB_OK | MB_ICONEXCLAMATION);
+		MessageBox(_T("‰∏çËÉΩÊçïËé∑Ê∏∏ÊàèÊùÜ"), NULL, MB_OK | MB_ICONEXCLAMATION);
 		b_all = TRUE;
 		return ;
 	}
 	else if(result == JOYERR_UNPLUGGED )
 	{
 		MessageBeep(MB_ICONEXCLAMATION);
-		MessageBox(_T("”Œœ∑∏ÀŒ¥”ÎœµÕ≥¡¨Ω”"), NULL, MB_OK | MB_ICONEXCLAMATION);
+		MessageBox(_T("Ê∏∏ÊàèÊùÜÊú™‰∏éÁ≥ªÁªüËøûÊé•"), NULL, MB_OK | MB_ICONEXCLAMATION);
 		b_all = TRUE;
 		return ;
 	}
 	else if (result == MMSYSERR_NODRIVER)
 	{
 		MessageBeep(MB_ICONEXCLAMATION);
-		MessageBox(_T("”Œœ∑∏À«˝∂Ø√ª”–∞≤◊∞"), NULL, MB_OK | MB_ICONEXCLAMATION);
+		MessageBox(_T("Ê∏∏ÊàèÊùÜÈ©±Âä®Ê≤°ÊúâÂÆâË£Ö"), NULL, MB_OK | MB_ICONEXCLAMATION);
 		b_all = TRUE;
 		return ;
 	}
@@ -239,7 +239,7 @@ void CHandlerDlg::FlashButton()
 	{
 		flag=GetDlgItem(IDC_LEFT)->IsWindowEnabled();
 		GetDlgItem(IDC_LEFT)->EnableWindow(!flag);
-		SetDlgItemText(IDC_LEFT,_T("<<◊Û>>"));
+		SetDlgItemText(IDC_LEFT,_T("<<Â∑¶>>"));
 		if(b_Left == FALSE)
 			IsFastSlow(i_Flags,IDC_FASTER,IDC_SLOWER);
 	}
@@ -247,7 +247,7 @@ void CHandlerDlg::FlashButton()
 	{
 		flag=GetDlgItem(IDC_RIGHT)->IsWindowEnabled();
 		GetDlgItem(IDC_RIGHT)->EnableWindow(!flag);
-		SetDlgItemText(IDC_RIGHT,_T("<<”“>>"));
+		SetDlgItemText(IDC_RIGHT,_T("<<Âè≥>>"));
 		if(b_Right == FALSE)
 			IsFastSlow(i_Flags,IDC_FASTER,IDC_SLOWER);
 	}
@@ -255,7 +255,7 @@ void CHandlerDlg::FlashButton()
 	{
 		flag=GetDlgItem(IDC_FORWARD)->IsWindowEnabled();
 		GetDlgItem(IDC_FORWARD)->EnableWindow(!flag);
-		SetDlgItemText(IDC_FORWARD,_T("<<«∞>>"));
+		SetDlgItemText(IDC_FORWARD,_T("<<Ââç>>"));
 		if(b_Forward == FALSE)
 			IsFastSlow(i_Flags,IDC_FASTER,IDC_SLOWER);
 	}
@@ -263,7 +263,7 @@ void CHandlerDlg::FlashButton()
 	{
 		flag=GetDlgItem(IDC_BACKWARD)->IsWindowEnabled();
 		GetDlgItem(IDC_BACKWARD)->EnableWindow(!flag);
-		SetDlgItemText(IDC_BACKWARD,_T("<<∫Û>>"));
+		SetDlgItemText(IDC_BACKWARD,_T("<<Âêé>>"));
 		if(b_Backword == FALSE)
 			IsFastSlow(i_Flags,IDC_FASTER,IDC_SLOWER);
 	}
@@ -320,9 +320,9 @@ LRESULT CHandlerDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 					//WritePort();
 					
 					Sleep(5);
-					i_Flags = 1;//º”ÀŸ
+					i_Flags = 1;//Âä†ÈÄü
 					b_Left =FALSE;
-					SetDlgItemText(IDC_WORKSTATE,_T("º”ÀŸ+◊Û◊™"));
+					SetDlgItemText(IDC_WORKSTATE,_T("Âä†ÈÄü+Â∑¶ËΩ¨"));
 				} 
 				else if(wParam & JOY_BUTTON4)
 				{
@@ -332,9 +332,9 @@ LRESULT CHandlerDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 					/************************************************************************/
 					//command :
 					//WritePort();
-					i_Flags = 2;//ºıÀŸ
+					i_Flags = 2;//ÂáèÈÄü
 					b_Left =FALSE;
-					SetDlgItemText(IDC_WORKSTATE,_T("ºıÀŸ+◊Û◊™"));
+					SetDlgItemText(IDC_WORKSTATE,_T("ÂáèÈÄü+Â∑¶ËΩ¨"));
 
 				}
 				else
@@ -342,14 +342,19 @@ LRESULT CHandlerDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 					/************************************************************************/
 					/* Here send the command to the handler(WriteChar())                    */
 					/************************************************************************/
-					//command :
-					//WritePort();
+				
 					b_Left = TRUE;
-					m_Port.WriteToPort("1010101011001101");
+					//CString command = "cfc8";
+					CString command = "cfc8";
+					
+					char data[512] = {0};
+					int len = Str2Hex(command,data);
+					m_Port.WriteToPort(data,len);
+					
 					Sleep(5);
-					SetDlgItemText(IDC_WORKSTATE,_T("◊Û◊™"));
-					SetDlgItemText(IDC_FASTER,_T("º”ÀŸ"));
-					SetDlgItemText(IDC_SLOWER,_T("ºıÀŸ"));
+					SetDlgItemText(IDC_WORKSTATE,_T("Â∑¶ËΩ¨"));
+					SetDlgItemText(IDC_FASTER,_T("Âä†ÈÄü"));
+					SetDlgItemText(IDC_SLOWER,_T("ÂáèÈÄü"));
 				}
 			}
 			else if(joyx >= 20)
@@ -365,27 +370,31 @@ LRESULT CHandlerDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 					Sleep(5);
 					i_Flags = 1;
 					b_Right = FALSE;
-					SetDlgItemText(IDC_WORKSTATE,_T("º”ÀŸ+”“◊™"));
+					SetDlgItemText(IDC_WORKSTATE,_T("Âä†ÈÄü+Âè≥ËΩ¨"));
 				} 
 				else if (wParam & JOY_BUTTON4)
 				{
 					Sleep(5);
 					i_Flags = 2;
 					b_Right = FALSE;
-					SetDlgItemText(IDC_WORKSTATE,_T("ºıÀŸ+”“◊™"));
+					SetDlgItemText(IDC_WORKSTATE,_T("ÂáèÈÄü+Âè≥ËΩ¨"));
 				}
 				else
 				{
 					/************************************************************************/
 					/* Here send the command to the handler(WriteChar())                    */
 					/************************************************************************/
-					//command :
-					//WritePort();
+					CString command2 = "0000";
+
+					char data2[512] = {0};
+					int len2 = Str2Hex(command2,data2);
+					m_Port.WriteToPort(data2,len2);
+
 					Sleep(5);
 					b_Right = TRUE;
-					SetDlgItemText(IDC_WORKSTATE,_T("”“◊™"));
-					SetDlgItemText(IDC_FASTER,_T("º”ÀŸ"));
-					SetDlgItemText(IDC_SLOWER,_T("ºıÀŸ"));
+					SetDlgItemText(IDC_WORKSTATE,_T("Âè≥ËΩ¨"));
+					SetDlgItemText(IDC_FASTER,_T("Âä†ÈÄü"));
+					SetDlgItemText(IDC_SLOWER,_T("ÂáèÈÄü"));
 				}
 			}
 
@@ -404,7 +413,7 @@ LRESULT CHandlerDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 					Sleep(5);
 					i_Flags = 1;
 					b_Forward = FALSE;
-					SetDlgItemText(IDC_WORKSTATE,_T("º”ÀŸ+«∞Ω¯"));
+					SetDlgItemText(IDC_WORKSTATE,_T("Âä†ÈÄü+ÂâçËøõ"));
 				} 
 				else if (wParam & JOY_BUTTON4)
 				{
@@ -416,7 +425,7 @@ LRESULT CHandlerDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 					Sleep(5);
 					i_Flags = 2;
 					b_Forward = FALSE;
-					SetDlgItemText(IDC_WORKSTATE,_T("ºıÀŸ+«∞Ω¯")); 
+					SetDlgItemText(IDC_WORKSTATE,_T("ÂáèÈÄü+ÂâçËøõ")); 
 				} 
 				
 				else
@@ -426,11 +435,18 @@ LRESULT CHandlerDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 					/************************************************************************/
 					//command :
 					//WritePort();
+					//position = 800
+					CString command44 = "23 30 50 32 30 30 30 0D 0A";//the sign of the end "0D 0A"
+
+					char data44[512] = {0};
+					int len44 = Str2Hex(command44,data44);
+					m_Port.WriteToPort(data44,len44);
+
 					Sleep(5);
 					b_Forward = TRUE;
-					SetDlgItemText(IDC_WORKSTATE,_T("«∞Ω¯"));
-					SetDlgItemText(IDC_FASTER,_T("º”ÀŸ"));
-					SetDlgItemText(IDC_SLOWER,_T("ºıÀŸ"));
+					SetDlgItemText(IDC_WORKSTATE,_T("ÂâçËøõ"));
+					SetDlgItemText(IDC_FASTER,_T("Âä†ÈÄü"));
+					SetDlgItemText(IDC_SLOWER,_T("ÂáèÈÄü"));
 				}
 				
 			}
@@ -447,7 +463,7 @@ LRESULT CHandlerDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 					Sleep(5);
 					i_Flags = 1;
 					b_Backword = FALSE;
-					SetDlgItemText(IDC_WORKSTATE,_T("º”ÀŸ+∫ÛÕÀ"));
+					SetDlgItemText(IDC_WORKSTATE,_T("Âä†ÈÄü+ÂêéÈÄÄ"));
 				} 
 				else if (wParam & JOY_BUTTON4)
 				{
@@ -456,10 +472,11 @@ LRESULT CHandlerDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 					/************************************************************************/
 					//command :
 					//WritePort();
+
 					Sleep(5);
 					i_Flags = 2;
 					b_Backword = FALSE;
-					SetDlgItemText(IDC_WORKSTATE,_T("ºıÀŸ+∫ÛÕÀ"));
+					SetDlgItemText(IDC_WORKSTATE,_T("ÂáèÈÄü+ÂêéÈÄÄ"));
 				} 
 				else
 				{
@@ -468,11 +485,18 @@ LRESULT CHandlerDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 					/************************************************************************/
 					//command :
 					//WritePort();
+					//position = 2000
+					CString command444 = "23 30 50 38 30 30 0D 0A";
+
+					char data444[512] = {0};
+					int len444 = Str2Hex(command444,data444);
+					m_Port.WriteToPort(data444,len444);
+
 					Sleep(5);
 					b_Backword = TRUE;
-					SetDlgItemText(IDC_WORKSTATE,_T("∫ÛÕÀ"));
-					SetDlgItemText(IDC_FASTER,_T("º”ÀŸ"));
-					SetDlgItemText(IDC_SLOWER,_T("ºıÀŸ"));
+					SetDlgItemText(IDC_WORKSTATE,_T("ÂêéÈÄÄ"));
+					SetDlgItemText(IDC_FASTER,_T("Âä†ÈÄü"));
+					SetDlgItemText(IDC_SLOWER,_T("ÂáèÈÄü"));
 				}
 			}
 			if(joyx>12 && joyx<20 && joyy<20&&joyy>12)
@@ -485,8 +509,8 @@ LRESULT CHandlerDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 					//command :
 					//WritePort();
 					Sleep(5);
-					SetDlgItemText(IDC_WORKSTATE,_T("◊•»°"));
-					SetDlgItemText(IDC_SNACH,_T("<<◊•>>"));
+					SetDlgItemText(IDC_WORKSTATE,_T("ÊäìÂèñ"));
+					SetDlgItemText(IDC_SNACH,_T("<<Êäì>>"));
 				} 
 				else if(wParam & JOY_BUTTON2)
 				{
@@ -496,7 +520,7 @@ LRESULT CHandlerDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 					//command :
 					//WritePort();
 					Sleep(5);
-					SetDlgItemText(IDC_WORKSTATE,_T("∏¥Œª"));
+					SetDlgItemText(IDC_WORKSTATE,_T("Â§ç‰Ωç"));
 				}
 				else if(wParam & JOY_BUTTON3)
 				{
@@ -506,8 +530,8 @@ LRESULT CHandlerDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 					//command :
 					//WritePort();
 					Sleep(5);
-					SetDlgItemText(IDC_WORKSTATE,_T("…œ…˝"));
-					SetDlgItemText(IDC_UPDOWN,_T("…œ…˝"));	
+					SetDlgItemText(IDC_WORKSTATE,_T("‰∏äÂçá"));
+					SetDlgItemText(IDC_UPDOWN,_T("‰∏äÂçá"));	
 				} 
 				else if(wParam & JOY_BUTTON4)
 				{
@@ -518,16 +542,16 @@ LRESULT CHandlerDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 					//command :
 					//WritePort();
 					Sleep(5);
-					SetDlgItemText(IDC_WORKSTATE,_T("œ¬Ωµ"));
-					SetDlgItemText(IDC_UPDOWN,_T("œ¬Ωµ"));
+					SetDlgItemText(IDC_WORKSTATE,_T("‰∏ãÈôç"));
+					SetDlgItemText(IDC_UPDOWN,_T("‰∏ãÈôç"));
 
 				} 
 				else if (wParam & JOY_BUTTON6)
 				{
 					
 					Sleep(5);
-					SetDlgItemText(IDC_WORKSTATE,_T("À…ø™"));
-					SetDlgItemText(IDC_LOOSE,_T("<<À…>>"));
+					SetDlgItemText(IDC_WORKSTATE,_T("ÊùæÂºÄ"));
+					SetDlgItemText(IDC_LOOSE,_T("<<Êùæ>>"));
 				}
 				else
 				{
@@ -537,10 +561,10 @@ LRESULT CHandlerDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 					//command :
 					//WritePort();
 					Sleep(5);
-					SetDlgItemText(IDC_WORKSTATE,_T("‘À––÷–..."));
-					SetDlgItemText(IDC_UPDOWN,_T("…˝/Ωµ"));	
-					SetDlgItemText(IDC_SNACH,_T("◊•»°"));
-					SetDlgItemText(IDC_LOOSE,_T("À…ø™"));
+					SetDlgItemText(IDC_WORKSTATE,_T("ËøêË°å‰∏≠..."));
+					SetDlgItemText(IDC_UPDOWN,_T("Âçá/Èôç"));	
+					SetDlgItemText(IDC_SNACH,_T("ÊäìÂèñ"));
+					SetDlgItemText(IDC_LOOSE,_T("ÊùæÂºÄ"));
 				}	
 			OnSetWinState();
 			}
@@ -567,13 +591,13 @@ void CHandlerDlg::OnSetWinState()
 	GetDlgItem(IDC_FORWARD)->EnableWindow(TRUE);
 	GetDlgItem(IDC_BACKWARD)->EnableWindow(TRUE);
 
-	SetDlgItemText(IDC_BACKWARD,_T("∫Û"));
-	SetDlgItemText(IDC_FORWARD,_T("«∞"));
-	SetDlgItemText(IDC_LEFT,_T("◊Û"));
-	SetDlgItemText(IDC_RIGHT,_T("”“"));
+	SetDlgItemText(IDC_BACKWARD,_T("Âêé"));
+	SetDlgItemText(IDC_FORWARD,_T("Ââç"));
+	SetDlgItemText(IDC_LEFT,_T("Â∑¶"));
+	SetDlgItemText(IDC_RIGHT,_T("Âè≥"));
 
-	SetDlgItemText(IDC_FASTER,_T("º”ÀŸ"));
-	SetDlgItemText(IDC_SLOWER,_T("ºıÀŸ"));
+	SetDlgItemText(IDC_FASTER,_T("Âä†ÈÄü"));
+	SetDlgItemText(IDC_SLOWER,_T("ÂáèÈÄü"));
 
 	i_Flags = 0;
 	b_Left = FALSE;
@@ -587,10 +611,10 @@ void CHandlerDlg::IsFastSlow(int flags,int id1,int id2)
 	switch(flags)
 	{
 	case 1://To be faster
-		SetDlgItemText(id1,_T("<<º”>>"));
+		SetDlgItemText(id1,_T("<<Âä†>>"));
 		break;
 	case 2://To be slower
-		SetDlgItemText(id2,_T("<<ºı>>"));
+		SetDlgItemText(id2,_T("<<Âáè>>"));
 		break;
 	}
 }
@@ -628,7 +652,7 @@ void CHandlerDlg::OnOpenCamera()
 		AfxMessageBox(_T("Failure to connect to the driver")); //Driver Connect Failure
 
 	if(!capCaptureGetSetup(hCamera,&m_CaptureParams,sizeof(m_CaptureParams)))//get the relative configuration
-		AfxMessageBox(_T(" ”∆µ∏Ò Ω…Ë÷√ ß∞‹"));//»Áπ˚«˝∂Ø≤ª÷ß≥÷¥À∏Ò ΩΩ´∑µªÿ0 £¨Fail to set the video format
+		AfxMessageBox(_T("ËßÜÈ¢ëÊ†ºÂºèËÆæÁΩÆÂ§±Ë¥•"));//Â¶ÇÊûúÈ©±Âä®‰∏çÊîØÊåÅÊ≠§Ê†ºÂºèÂ∞ÜËøîÂõû0 ÔºåFail to set the video format
 	GetDlgItem(IDC_BTN_CAMERA)->EnableWindow(FALSE);
 	capPreviewScale(hCamera,TRUE);
 	capPreviewRate(hCamera,1);//sets the frame display rate in preview mode
@@ -664,14 +688,14 @@ void CHandlerDlg::OnConfigSerial()
 			SetDlgItemText(IDC_EDIT_DATABIT,dlgConfig->m_strDatabit);
 			SetDlgItemText(IDC_EDIT_STOPBIT,dlgConfig->m_strStopbit);
 
-			SetDlgItemText(IDC_SERIAL_SATTE,_T("¥Æø⁄“—≥…π¶¥Úø™..."));
+			SetDlgItemText(IDC_SERIAL_SATTE,_T("‰∏≤Âè£Â∑≤ÊàêÂäüÊâìÂºÄ..."));
 
 			GetDlgItem(IDC_BTNCONFIGURATION)->EnableWindow(FALSE);
 			GetDlgItem(IDC_BUTTON_CLOSESERIAL)->EnableWindow(TRUE);
 		}
 		else
 		{
-			SetDlgItemText(IDC_SERIAL_SATTE,_T("¥Æø⁄¥Úø™ ß∞‹..."));
+			SetDlgItemText(IDC_SERIAL_SATTE,_T("‰∏≤Âè£ÊâìÂºÄÂ§±Ë¥•..."));
 			
 		}
 	}
@@ -687,7 +711,7 @@ void CHandlerDlg::OnBtnCloseSerial()
 	GetDlgItem(IDC_BTNCONFIGURATION)->EnableWindow(TRUE);
 	GetDlgItem(IDC_BUTTON_CLOSESERIAL)->EnableWindow(FALSE);
 
-	SetDlgItemText(IDC_SERIAL_SATTE,_T("¥Æø⁄“—±ªπÿ±’"));
+	SetDlgItemText(IDC_SERIAL_SATTE,_T("‰∏≤Âè£Â∑≤Ë¢´ÂÖ≥Èó≠"));
 	SetDlgItemText(IDC_EDIT_PORTNUM,_T(" "));
 	SetDlgItemText(IDC_EDIT_PARITY,_T(" "));
 	SetDlgItemText(IDC_EDIT_DATABIT,_T(" "));
@@ -709,4 +733,47 @@ void CHandlerDlg::OnBtnAbout()
 	// TODO: Add your control notification handler code here
 	CAboutDlg dlgAbout;
 	dlgAbout.DoModal();
+}
+
+
+int CHandlerDlg::Str2Hex(CString str, char* data)
+{
+	int t,t1;
+	int rlen=0,len=str.GetLength();
+	 
+	for(int i=0;i<len;)
+	{
+		char l,h=str[i];
+		if(h==' ')
+		{
+			i++;
+			continue;
+		}
+		i++;
+		if(i>=len)
+			break;
+		l=str[i];
+		t=HexChar(h);
+		t1=HexChar(l);
+		if((t==16)||(t1==16))
+			break;
+		else 
+			t=t*16+t1;
+		i++;
+		data[rlen]=(char)t;
+		rlen++;
+	}
+	return rlen;
+}
+
+char CHandlerDlg::HexChar(char c)
+{
+	if((c>='0')&&(c<='9'))
+		return c-0x30;
+	else if((c>='A')&&(c<='F'))
+		return c-'A'+10;
+	else if((c>='a')&&(c<='f'))
+		return c-'a'+10;
+	else 
+		return 0x10;
 }

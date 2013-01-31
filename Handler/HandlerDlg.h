@@ -58,4 +58,6 @@ public:
 	afx_msg void OnBtnCloseSerial();
 	afx_msg void OnBnClickedCancel();
 	afx_msg void OnBtnAbout();
+	afx_msg int Str2Hex(CString str, char* data);
+	afx_msg char HexChar(char c);
 };

@@ -1,8 +1,8 @@
-
 #include "stdafx.h"
 #include "CSerialPort.h"
 
 #include <assert.h>
+
  
 //
 // Constructor
@@ -10,7 +10,6 @@
 CSerialPort::CSerialPort()
 {
 	m_hComm = NULL;
-
 	// initialize overlapped structure members to zero
 	m_ov.Offset = 0;
 	m_ov.OffsetHigh = 0;
@@ -21,6 +20,7 @@ CSerialPort::CSerialPort()
 	m_hShutdownEvent = NULL;
 
 	m_szWriteBuffer = NULL;
+	m_nWriteSize=1;
 
 	m_bThreadAlive = FALSE;
 }
@@ -35,8 +35,22 @@ CSerialPort::~CSerialPort()
 		SetEvent(m_hShutdownEvent);
 	} while (m_bThreadAlive);
 
-	//TRACE("Thread ended\n");
+	
+	// if the port is still opened: close it 
+	if (m_hComm != NULL)
+	{
+		CloseHandle(m_hComm);
+		m_hComm = NULL;
+	}
+	// Close Handles  
+	if(m_hShutdownEvent!=NULL)
+		CloseHandle( m_hShutdownEvent); 
+	if(m_ov.hEvent!=NULL)
+		CloseHandle( m_ov.hEvent ); 
+	if(m_hWriteEvent!=NULL)
+		CloseHandle( m_hWriteEvent ); 
 
+	TRACE("Thread ended\n");
 	delete [] m_szWriteBuffer;
 }
 
@@ -44,7 +58,7 @@ CSerialPort::~CSerialPort()
 // Initialize the port. This can be port 1 to 4.
 //
 BOOL CSerialPort::InitPort(CWnd* pPortOwner,	// the owner (CWnd) of the port (receives message)
-						   UINT  portnr,		// portnumber (1..9)
+						   UINT  portnr,		// portnumber (1..4)
 						   UINT  baud,			// baudrate
 						   char  parity,		// parity 
 						   UINT  databits,		// databits 
@@ -52,6 +66,8 @@ BOOL CSerialPort::InitPort(CWnd* pPortOwner,	// the owner (CWnd) of the port (re
 						   DWORD dwCommEvents,	// EV_RXCHAR, EV_CTS etc
 						   UINT  writebuffersize)	// size to the writebuffer
 {
+	//assert(portnr > 0 && portnr < 5);
+	assert(pPortOwner != NULL);
 
 	// if the thread is alive: Kill
 	if (m_bThreadAlive)
@@ -66,15 +82,18 @@ BOOL CSerialPort::InitPort(CWnd* pPortOwner,	// the owner (CWnd) of the port (re
 	// create events
 	if (m_ov.hEvent != NULL)
 		ResetEvent(m_ov.hEvent);
-	m_ov.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+	else
+		m_ov.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 
 	if (m_hWriteEvent != NULL)
 		ResetEvent(m_hWriteEvent);
-	m_hWriteEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+	else
+		m_hWriteEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 	
 	if (m_hShutdownEvent != NULL)
 		ResetEvent(m_hShutdownEvent);
-	m_hShutdownEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+	else
+		m_hShutdownEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 
 	// initialize the event objects
 	m_hEventArray[0] = m_hShutdownEvent;	// highest priority
@@ -111,7 +130,7 @@ BOOL CSerialPort::InitPort(CWnd* pPortOwner,	// the owner (CWnd) of the port (re
 	}
 
 	// prepare port strings
-	sprintf(szPort, "COM%d",portnr);
+	sprintf(szPort, "COM%d", portnr);
 	sprintf(szBaud, "baud=%d parity=%c data=%d stop=%d", baud, parity, databits, stopbits);
 
 	// get a handle to the port
@@ -146,6 +165,7 @@ BOOL CSerialPort::InitPort(CWnd* pPortOwner,	// the owner (CWnd) of the port (re
 		{
 			if (GetCommState(m_hComm, &m_dcb))
 			{
+				m_dcb.EvtChar = 'q';
 				m_dcb.fRtsControl = RTS_CONTROL_ENABLE;		// set RTS bit high!
 				if (BuildCommDCB(szBaud, &m_dcb))
 				{
@@ -175,13 +195,15 @@ BOOL CSerialPort::InitPort(CWnd* pPortOwner,	// the owner (CWnd) of the port (re
 	// release critical section
 	LeaveCriticalSection(&m_csCommunicationSync);
 
+	TRACE("Initialisation for communicationport %d completed.\nUse Startmonitor to communicate.\n", portnr);
+
 	return TRUE;
 }
 
 //
 //  The CommThread Function.
 //
-UINT CSerialPort::CommThread(LPVOID pParam)//Here pParam is just "this"
+UINT CSerialPort::CommThread(LPVOID pParam)
 {
 	// Cast the void pointer passed to the thread back to
 	// a pointer of CSerialPort class
@@ -196,7 +218,7 @@ UINT CSerialPort::CommThread(LPVOID pParam)//Here pParam is just "this"
 	DWORD Event = 0;
 	DWORD CommEvent = 0;
 	DWORD dwError = 0;
-	COMSTAT comstat;
+	COMSTAT comstat = {0};
 	BOOL  bResult = TRUE;
 		
 	// Clear comm buffers at startup
@@ -220,7 +242,7 @@ UINT CSerialPort::CommThread(LPVOID pParam)//Here pParam is just "this"
 
 		bResult = WaitCommEvent(port->m_hComm, &Event, &port->m_ov);
 
-		if (!bResult)  //WaitCommEvent() Failure
+		if (!bResult)  
 		{ 
 			// If WaitCommEvent() returns FALSE, process the last error to determin
 			// the reason..
@@ -297,22 +319,33 @@ UINT CSerialPort::CommThread(LPVOID pParam)//Here pParam is just "this"
 			{
 				// Shutdown event.  This is event zero so it will be
 				// the higest priority and be serviced first.
-
-			 	port->m_bThreadAlive = FALSE;
+				CloseHandle(port->m_hComm);
+				port->m_hComm=NULL;
+				port->m_bThreadAlive = FALSE;
 				
 				// Kill this thread.  break is not needed, but makes me feel better.
 				AfxEndThread(100);
+
 				break;
 			}
 		case 1:	// read event
 			{
 				GetCommMask(port->m_hComm, &CommEvent);
-				if (CommEvent & EV_RXFLAG)
-					::SendMessage(port->m_pOwner->m_hWnd, WM_COMM_RXFLAG_DETECTED, (WPARAM) 0, (LPARAM) port->m_nPortNr);
-			
 				if (CommEvent & EV_RXCHAR)
 					// Receive character event from port.
-					ReceiveChar(port, comstat);	
+					ReceiveChar(port, comstat);
+				if (CommEvent & EV_CTS)
+					::SendMessage(port->m_pOwner->m_hWnd, WM_COMM_CTS_DETECTED, (WPARAM) 0, (LPARAM) port->m_nPortNr);
+				if (CommEvent & EV_BREAK)
+					::SendMessage(port->m_pOwner->m_hWnd, WM_COMM_BREAK_DETECTED, (WPARAM) 0, (LPARAM) port->m_nPortNr);
+				if (CommEvent & EV_ERR)
+					::SendMessage(port->m_pOwner->m_hWnd, WM_COMM_ERR_DETECTED, (WPARAM) 0, (LPARAM) port->m_nPortNr);
+				if (CommEvent & EV_RING)
+					::SendMessage(port->m_pOwner->m_hWnd, WM_COMM_RING_DETECTED, (WPARAM) 0, (LPARAM) port->m_nPortNr);
+				
+				if (CommEvent & EV_RXFLAG)
+					::SendMessage(port->m_pOwner->m_hWnd, WM_COMM_RXFLAG_DETECTED, (WPARAM) 0, (LPARAM) port->m_nPortNr);
+					
 				break;
 			}  
 		case 2: // write event
@@ -336,6 +369,7 @@ BOOL CSerialPort::StartMonitoring()
 {
 	if (!(m_Thread = AfxBeginThread(CommThread, this)))
 		return FALSE;
+	TRACE("Thread started\n");
 	return TRUE;	
 }
 
@@ -344,7 +378,7 @@ BOOL CSerialPort::StartMonitoring()
 //
 BOOL CSerialPort::RestartMonitoring()
 {
-	
+	TRACE("Thread resumed\n");
 	m_Thread->ResumeThread();
 	return TRUE;	
 }
@@ -355,7 +389,7 @@ BOOL CSerialPort::RestartMonitoring()
 //
 BOOL CSerialPort::StopMonitoring()
 {
-	
+	TRACE("Thread suspended\n");
 	m_Thread->SuspendThread(); 
 	return TRUE;	
 }
@@ -379,10 +413,12 @@ void CSerialPort::ProcessErrorMessage(char* ErrorText)
 		0,
 		NULL 
 	);
-	
-	AfxMessageBox( _T("ProcessErrorMessage Error"));
-	LocalFree(lpMsgBuf);
 
+	sprintf(Temp, "WARNING:  %s Failed with the following error: \n%s\nPort: %d\n", (char*)ErrorText, lpMsgBuf, m_nPortNr); 
+	MessageBox(NULL, Temp, "Application Error", MB_ICONSTOP);
+
+	LocalFree(lpMsgBuf);
+	delete [] Temp;
 }
 
 //
@@ -411,7 +447,8 @@ void CSerialPort::WriteChar(CSerialPort* port)
 
 		bResult = WriteFile(port->m_hComm,							// Handle to COMM Port
 							port->m_szWriteBuffer,					// Pointer to message buffer in calling finction
-							strlen((char*)port->m_szWriteBuffer),	// Length of message to send
+//							strlen((char*)port->m_szWriteBuffer),	// Length of message to send
+							port->m_nWriteSize,	// Length of message to send
 							&BytesSent,								// Where to store the number of bytes sent
 							&port->m_ov);							// Overlapped structure
 
@@ -453,17 +490,19 @@ void CSerialPort::WriteChar(CSerialPort* port)
 		LeaveCriticalSection(&port->m_csCommunicationSync);
 
 		// deal with the error code 
-		if (!bResult)  
+//		if (!bResult)  
 		{
-			port->ProcessErrorMessage("GetOverlappedResults() in WriteFile()");
+//			port->ProcessErrorMessage("GetOverlappedResults() in WriteFile()");
 		}	
 	} // end if (!bWrite)
 
-	// Verify that the data size send equals what we tried to send
-	if (BytesSent != strlen((char*)port->m_szWriteBuffer))
+	//Verify that the data size send equals what we tried to send
+	if (BytesSent != port->m_nWriteSize)	// Length of message to send)
 	{
 		TRACE("WARNING: WriteFile() error.. Bytes Sent: %d; Message Length: %d\n", BytesSent, strlen((char*)port->m_szWriteBuffer));
 	}
+//	::SendMessage((port->m_pOwner)->m_hWnd, WM_COMM_TXEMPTY_DETECTED, (WPARAM) RXBuff, (LPARAM) port->m_nPortNr);
+//	::SendMessage((port->m_pOwner)->m_hWnd, WM_COMM_TXEMPTY_DETECTED,0,(LPARAM) port->m_nPortNr);
 }
 
 //
@@ -573,11 +612,50 @@ void CSerialPort::ReceiveChar(CSerialPort* port, COMSTAT comstat)
 void CSerialPort::WriteToPort(char* string)
 {		
 	assert(m_hComm != 0);
-
 	
 	memset(m_szWriteBuffer, 0, sizeof(m_szWriteBuffer));
 	strcpy(m_szWriteBuffer, string);
-	
+	m_nWriteSize=strlen(string);
+
+	// set event for write
+	SetEvent(m_hWriteEvent);
+}
+
+
+void CSerialPort::WriteToPort(char* string,int n)
+{		
+	assert(m_hComm != 0);
+
+	memset(m_szWriteBuffer, 0, sizeof(m_szWriteBuffer));
+//	memset(m_szWriteBuffer, 0, n);
+//	strncpy(m_szWriteBuffer, string, n);
+	memcpy(m_szWriteBuffer, string, n);
+	m_nWriteSize=n;
+
+	// set event for write
+	SetEvent(m_hWriteEvent);
+}
+
+void CSerialPort::WriteToPort(LPCTSTR string)
+{		
+	assert(m_hComm != 0);
+
+	memset(m_szWriteBuffer, 0, sizeof(m_szWriteBuffer));
+	strcpy(m_szWriteBuffer, string);
+	m_nWriteSize=strlen(string);
+
+	// set event for write
+	SetEvent(m_hWriteEvent);
+}
+
+void CSerialPort::WriteToPort(LPCTSTR string,int n)
+{		
+	assert(m_hComm != 0);
+
+	memset(m_szWriteBuffer, 0, sizeof(m_szWriteBuffer));
+//	strncpy(m_szWriteBuffer, string, n);
+	memcpy(m_szWriteBuffer, string, n);
+	m_nWriteSize=n;
 	// set event for write
 	SetEvent(m_hWriteEvent);
 }
@@ -609,6 +687,34 @@ DWORD CSerialPort::GetWriteBufferSize()
 
 void CSerialPort::ClosePort()
 {
-	SetEvent(m_hShutdownEvent);
+		SetEvent(m_hShutdownEvent);
 }
 
+/*
+void CSerialPort::ClosePort()
+{
+	do
+	{
+		SetEvent(m_hShutdownEvent);
+	} while (m_bThreadAlive);
+
+	
+	// if the port is still opened: close it 
+	if (m_hComm != NULL)
+	{
+		CloseHandle(m_hComm);
+		m_hComm = NULL;
+	}
+	// Close Handles  
+	if(m_hShutdownEvent!=NULL)
+		CloseHandle( m_hShutdownEvent); 
+	if(m_ov.hEvent!=NULL)
+		CloseHandle( m_ov.hEvent ); 
+	if(m_hWriteEvent!=NULL)
+		CloseHandle( m_hWriteEvent ); 
+
+	TRACE("Thread ended\n");
+	delete [] m_szWriteBuffer;
+}
+
+*/
