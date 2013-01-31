@@ -344,12 +344,15 @@ LRESULT CHandlerDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 					/************************************************************************/
 				
 					b_Left = TRUE;
-					//CString command = "cfc8";
+					/*
 					CString command = "cfc8";
-					
 					char data[512] = {0};
 					int len = Str2Hex(command,data);
-					m_Port.WriteToPort(data,len);
+					//m_Port.WriteToPort(data,len);
+					*/
+					char ch[2] = {0xcf,0xc8};
+					
+					m_Port.WriteToPort(ch);
 					
 					Sleep(5);
 					SetDlgItemText(IDC_WORKSTATE,_T("左转"));
@@ -384,11 +387,7 @@ LRESULT CHandlerDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 					/************************************************************************/
 					/* Here send the command to the handler(WriteChar())                    */
 					/************************************************************************/
-					CString command2 = "0000";
-
-					char data2[512] = {0};
-					int len2 = Str2Hex(command2,data2);
-					m_Port.WriteToPort(data2,len2);
+				
 
 					Sleep(5);
 					b_Right = TRUE;
@@ -433,14 +432,18 @@ LRESULT CHandlerDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 					/************************************************************************/
 					/* Here send the command to the handler(WriteChar())                    */
 					/************************************************************************/
-					//command :
-					//WritePort();
-					//position = 800
+					/*
 					CString command44 = "23 30 50 32 30 30 30 0D 0A";//the sign of the end "0D 0A"
-
 					char data44[512] = {0};
 					int len44 = Str2Hex(command44,data44);
 					m_Port.WriteToPort(data44,len44);
+					*/
+					//the sign of the steering engin is "\r\n"
+					CString comdSteeringEngine ;
+					comdSteeringEngine = "#0P800";
+					char tempComdSteer[512] = {0};
+					sprintf(tempComdSteer,"%s\r\n",comdSteeringEngine);
+					m_Port.WriteToPort(tempComdSteer);
 
 					Sleep(5);
 					b_Forward = TRUE;
@@ -486,11 +489,18 @@ LRESULT CHandlerDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 					//command :
 					//WritePort();
 					//position = 2000
+					/*
 					CString command444 = "23 30 50 38 30 30 0D 0A";
-
 					char data444[512] = {0};
 					int len444 = Str2Hex(command444,data444);
 					m_Port.WriteToPort(data444,len444);
+					*/
+
+					CString comdSteeringEngine2 ;
+					comdSteeringEngine2 = "#0P1500";
+					char tempComdSteer2[512] = {0};
+					sprintf(tempComdSteer2,"%s\r\n",comdSteeringEngine2);//the steering engine's command must be "\r\n" at the end .
+					m_Port.WriteToPort(tempComdSteer2);
 
 					Sleep(5);
 					b_Backword = TRUE;
@@ -736,44 +746,4 @@ void CHandlerDlg::OnBtnAbout()
 }
 
 
-int CHandlerDlg::Str2Hex(CString str, char* data)
-{
-	int t,t1;
-	int rlen=0,len=str.GetLength();
-	 
-	for(int i=0;i<len;)
-	{
-		char l,h=str[i];
-		if(h==' ')
-		{
-			i++;
-			continue;
-		}
-		i++;
-		if(i>=len)
-			break;
-		l=str[i];
-		t=HexChar(h);
-		t1=HexChar(l);
-		if((t==16)||(t1==16))
-			break;
-		else 
-			t=t*16+t1;
-		i++;
-		data[rlen]=(char)t;
-		rlen++;
-	}
-	return rlen;
-}
 
-char CHandlerDlg::HexChar(char c)
-{
-	if((c>='0')&&(c<='9'))
-		return c-0x30;
-	else if((c>='A')&&(c<='F'))
-		return c-'A'+10;
-	else if((c>='a')&&(c<='f'))
-		return c-'a'+10;
-	else 
-		return 0x10;
-}
